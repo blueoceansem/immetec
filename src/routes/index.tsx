@@ -124,9 +124,9 @@ function LeadForm() {
 
 function Index() {
   return <main>
-    <header className="absolute inset-x-0 top-0 z-20"><div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-6 md:px-8"><img src={logoAsset.url} alt="IMME Tecnologia" className="h-12 w-auto"/><button onClick={scrollToForm} className="hidden text-sm font-semibold text-primary md:inline-flex">Fale com um especialista <ArrowRight className="ml-2" size={17}/></button></div></header>
+    <header className="absolute inset-x-0 top-0 z-20"><div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-6 md:px-8"><img src={logoAsset.url} alt="IMME Tecnologia" className="h-14 w-auto"/><button onClick={scrollToForm} className="hidden text-sm font-semibold text-primary md:inline-flex">Fale com um especialista <ArrowRight className="ml-2" size={17}/></button></div></header>
 
-    <section className="relative min-h-[92vh] overflow-hidden bg-background pt-36">
+    <section className="relative min-h-[760px] overflow-hidden bg-background pt-36 md:min-h-[820px]">
       <div className="absolute right-0 top-0 h-full w-1/3 bg-violet-soft/45 [clip-path:polygon(58%_0,100%_0,100%_100%,0_100%)]" />
       <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-5 pb-24 md:px-8 lg:grid-cols-[.95fr_1.05fr]">
         <div className="animate-fade-in"><p className="mb-5 flex items-center gap-2 text-xs font-bold uppercase text-primary"><span className="h-px w-8 bg-primary"/> Gestão para food service</p><h1 className="max-w-3xl text-4xl font-extrabold leading-[1.08] text-ink md:text-6xl">Seu bar ou restaurante com <span className="text-primary">gestão e controle</span> totalmente integrados.</h1><p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">Do controle manual pro sistema de verdade: vendas, estoque e caixa organizados, sem parar sua operação pra migrar.</p><div className="mt-8 flex flex-col gap-3 sm:flex-row"><Button onClick={scrollToForm} size="lg">Fale com um especialista agora <ArrowRight/></Button><button onClick={()=>document.getElementById('solucao')?.scrollIntoView({behavior:'smooth'})} className="inline-flex min-h-12 items-center justify-center gap-2 px-5 text-sm font-semibold text-primary">Como funciona a implantação <ArrowDown size={17}/></button></div></div>
