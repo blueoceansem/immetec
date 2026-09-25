@@ -100,12 +100,12 @@ function TestimonialCard({ name, person, video, index }: { name: string; person:
   const [playing, setPlaying] = useState(false);
   return (
     <article className="reveal group overflow-hidden bg-night text-primary-foreground shadow-soft">
-      <div className="relative aspect-video bg-night">
+      <div className="relative aspect-[9/16] bg-night">
         {playing ? (
-          <iframe className="absolute inset-0 h-full w-full" src={`https://www.youtube-nocookie.com/embed/${video}?autoplay=1&rel=0`} title={`Depoimento ${name}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
+          <iframe className="absolute inset-0 h-full w-full" src={`https://www.youtube-nocookie.com/embed/${video}?autoplay=1&rel=0&playsinline=1`} title={`Depoimento ${name}`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
         ) : (
           <button type="button" onClick={() => setPlaying(true)} aria-label={`Assistir ao depoimento de ${name}`} className="absolute inset-0 grid place-items-center">
-            <img src={`https://i.ytimg.com/vi/${video}/hqdefault.jpg`} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+            <img src={`https://i.ytimg.com/vi/${video}/oardefault.jpg`} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105" />
             <span className="absolute inset-0 bg-night/35 transition duration-500 group-hover:bg-night/20" />
             <span className="relative grid size-14 place-items-center rounded-full bg-accent text-primary-foreground shadow-brand transition duration-300 group-hover:scale-110"><Play className="ml-0.5 size-6" /></span>
           </button>
