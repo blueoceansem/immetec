@@ -37,7 +37,6 @@ export const Route = createFileRoute("/")({
 
 const formSchema = z.object({
   name: z.string().trim().min(2).max(100),
-  email: z.string().trim().email().max(255),
   whatsapp: z.string().trim().min(8).max(20),
   revenue: z.string().min(1),
   city: z.string().trim().min(2).max(100),
@@ -130,7 +129,7 @@ function LeadForm() {
     if (!parsed.success) { setError("Preencha todos os campos corretamente."); return; }
     setError("");
     const d = parsed.data;
-    const text = `Olá, IMME! Quero falar com um especialista.\n\nNome: ${d.name}\nE-mail: ${d.email}\nWhatsApp: ${d.whatsapp}\nFaturamento mensal: ${d.revenue}\nCidade/UF: ${d.city}\nQuantidade de atendentes: ${d.team}`;
+    const text = `Olá, IMME! Quero falar com um especialista.\n\nNome: ${d.name}\nWhatsApp: ${d.whatsapp}\nFaturamento mensal: ${d.revenue}\nCidade/UF: ${d.city}\nQuantidade de atendentes: ${d.team}`;
     // Open the WhatsApp tab synchronously so pop-up blockers allow it.
     const win = window.open("about:blank", "_blank");
     setSending(true);
@@ -151,7 +150,6 @@ function LeadForm() {
       <div className="mb-7"><h2 className="text-2xl font-bold text-ink">Veja como a IMME pode organizar sua operação</h2><p className="mt-2 text-sm text-muted-foreground">Preencha os dados abaixo e fale com um especialista.</p></div>
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="text-sm font-semibold">Nome<input name="name" maxLength={100} className={`${field} mt-2`} placeholder="Digite seu nome" /></label>
-        <label className="text-sm font-semibold">E-mail<input name="email" type="email" maxLength={255} className={`${field} mt-2`} placeholder="Digite seu melhor e-mail" /></label>
         <label className="text-sm font-semibold">WhatsApp<input name="whatsapp" inputMode="tel" maxLength={20} className={`${field} mt-2`} placeholder="Digite seu WhatsApp" /></label>
         <label className="text-sm font-semibold">Faturamento mensal<select name="revenue" defaultValue="" className={`${field} mt-2`}><option value="" disabled>Selecione uma opção</option><option>Até 100 Mil mensais</option><option>100 a 200 Mil mensais</option><option>201 a 500 Mil mensais</option><option>501 Mil a 1M mensais</option><option>1M a 3M mensais</option><option>Acima de 3M mensais</option></select></label>
         <label className="text-sm font-semibold">Cidade/UF<input name="city" maxLength={100} className={`${field} mt-2`} placeholder="Digite sua cidade" /></label>
