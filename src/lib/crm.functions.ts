@@ -6,7 +6,7 @@ const leadSchema = z.object({
   WhatsApp: z.string().trim().min(8).max(20),
   "Cidade/UF": z.string().trim().min(2).max(100),
   "Faturamento mensal": z.string().trim().min(1).max(100),
-  "Quantidade de atendentes": z.string().trim().min(1).max(50),
+  "Quantidade de atendentes": z.number().int().min(1).max(99999),
 });
 
 export const sendLeadToCrm = createServerFn({ method: "POST" })

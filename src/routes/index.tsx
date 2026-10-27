@@ -41,7 +41,7 @@ const formSchema = z.object({
   whatsapp: z.string().trim().min(8).max(20),
   revenue: z.string().min(1),
   city: z.string().trim().min(2).max(100),
-  team: z.string().min(1),
+  team: z.string().trim().regex(/^[1-9]\d{0,4}$/),
 });
 
 const solutions = [
@@ -135,7 +135,7 @@ function LeadForm() {
     const win = window.open("about:blank", "_blank");
     setSending(true);
     try {
-      const res = await sendLead({ data: { Nome: d.name, WhatsApp: d.whatsapp, "Cidade/UF": d.city, "Faturamento mensal": d.revenue, "Quantidade de atendentes": d.team } });
+      const res = await sendLead({ data: { Nome: d.name, WhatsApp: d.whatsapp, "Cidade/UF": d.city, "Faturamento mensal": d.revenue, "Quantidade de atendentes": Number(d.team) } });
       if (!res.ok) setError("Não foi possível registrar seus dados agora, mas você pode seguir pelo WhatsApp.");
     } catch {
       setError("Não foi possível registrar seus dados agora, mas você pode seguir pelo WhatsApp.");
@@ -153,9 +153,9 @@ function LeadForm() {
         <label className="text-sm font-semibold">Nome<input name="name" maxLength={100} className={`${field} mt-2`} placeholder="Digite seu nome" /></label>
         <label className="text-sm font-semibold">E-mail<input name="email" type="email" maxLength={255} className={`${field} mt-2`} placeholder="Digite seu melhor e-mail" /></label>
         <label className="text-sm font-semibold">WhatsApp<input name="whatsapp" inputMode="tel" maxLength={20} className={`${field} mt-2`} placeholder="Digite seu WhatsApp" /></label>
-        <label className="text-sm font-semibold">Faturamento mensal<select name="revenue" defaultValue="" className={`${field} mt-2`}><option value="" disabled>Selecione uma opção</option><option>Até R$ 50 mil</option><option>R$ 50 mil a R$ 100 mil</option><option>R$ 100 mil a R$ 300 mil</option><option>Acima de R$ 300 mil</option></select></label>
+        <label className="text-sm font-semibold">Faturamento mensal<select name="revenue" defaultValue="" className={`${field} mt-2`}><option value="" disabled>Selecione uma opção</option><option>Até 100 Mil mensais</option><option>100 a 200 Mil mensais</option><option>201 a 500 Mil mensais</option><option>501 Mil a 1M mensais</option><option>1M a 3M mensais</option><option>Acima de 3M mensais</option></select></label>
         <label className="text-sm font-semibold">Cidade/UF<input name="city" maxLength={100} className={`${field} mt-2`} placeholder="Digite sua cidade" /></label>
-        <label className="text-sm font-semibold">Quantidade de atendentes<select name="team" defaultValue="" className={`${field} mt-2`}><option value="" disabled>Selecione uma opção</option><option>Até 5</option><option>6 a 15</option><option>16 a 30</option><option>Mais de 30</option></select></label>
+        <label className="text-sm font-semibold">Quantidade de atendentes<input name="team" inputMode="numeric" maxLength={5} className={`${field} mt-2`} placeholder="Ex: 12" /></label>
       </div>
       {error && <p role="alert" className="mt-4 text-sm font-medium text-destructive">{error}</p>}
       <Button type="submit" size="lg" disabled={sending} className="mt-6 w-full">Quero falar com um especialista <ArrowRight /></Button>
