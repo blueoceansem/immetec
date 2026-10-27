@@ -18,6 +18,8 @@ import {
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import logoAsset from "@/assets/imme-logo.png.asset.json";
+import { useServerFn } from "@tanstack/react-start";
+import { sendLeadToCrm } from "@/lib/crm.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -118,15 +120,30 @@ function TestimonialCard({ name, person, video, index }: { name: string; person:
 
 function LeadForm() {
   const [error, setError] = useState("");
-  function submit(event: FormEvent<HTMLFormElement>) {
+  const [sending, setSending] = useState(false);
+  const sendLead = useServerFn(sendLeadToCrm);
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (sending) return;
     const data = Object.fromEntries(new FormData(event.currentTarget));
     const parsed = formSchema.safeParse(data);
     if (!parsed.success) { setError("Preencha todos os campos corretamente."); return; }
     setError("");
     const d = parsed.data;
-    const text = `Olá, IMME! Quero falar com um especialista.\n\nNome: ${d.name}\nE-mail: ${d.email}\nWhatsApp: ${d.whatsapp}\nFaturamento mensal: ${d.revenue}\nCidade/Estado: ${d.city}\nColaboradores: ${d.team}`;
-    window.open(`https://wa.me/5521967227622?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+    const text = `Olá, IMME! Quero falar com um especialista.\n\nNome: ${d.name}\nE-mail: ${d.email}\nWhatsApp: ${d.whatsapp}\nFaturamento mensal: ${d.revenue}\nCidade/UF: ${d.city}\nQuantidade de atendentes: ${d.team}`;
+    // Open the WhatsApp tab synchronously so pop-up blockers allow it.
+    const win = window.open("about:blank", "_blank");
+    setSending(true);
+    try {
+      const res = await sendLead({ data: { Nome: d.name, WhatsApp: d.whatsapp, "Cidade/UF": d.city, "Faturamento mensal": d.revenue, "Quantidade de atendentes": d.team } });
+      if (!res.ok) setError("Não foi possível registrar seus dados agora, mas você pode seguir pelo WhatsApp.");
+    } catch {
+      setError("Não foi possível registrar seus dados agora, mas você pode seguir pelo WhatsApp.");
+    } finally {
+      setSending(false);
+    }
+    const waUrl = `https://wa.me/5521967227622?text=${encodeURIComponent(text)}`;
+    if (win) { win.opener = null; win.location.href = waUrl; } else window.location.href = waUrl;
   }
   const field = "h-12 w-full rounded-md border border-input bg-background px-4 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15";
   return (
@@ -137,11 +154,11 @@ function LeadForm() {
         <label className="text-sm font-semibold">E-mail<input name="email" type="email" maxLength={255} className={`${field} mt-2`} placeholder="Digite seu melhor e-mail" /></label>
         <label className="text-sm font-semibold">WhatsApp<input name="whatsapp" inputMode="tel" maxLength={20} className={`${field} mt-2`} placeholder="Digite seu WhatsApp" /></label>
         <label className="text-sm font-semibold">Faturamento mensal<select name="revenue" defaultValue="" className={`${field} mt-2`}><option value="" disabled>Selecione uma opção</option><option>Até R$ 50 mil</option><option>R$ 50 mil a R$ 100 mil</option><option>R$ 100 mil a R$ 300 mil</option><option>Acima de R$ 300 mil</option></select></label>
-        <label className="text-sm font-semibold">Cidade/Estado<input name="city" maxLength={100} className={`${field} mt-2`} placeholder="Digite sua cidade" /></label>
-        <label className="text-sm font-semibold">Quantos colaboradores sua operação possui?<select name="team" defaultValue="" className={`${field} mt-2`}><option value="" disabled>Selecione uma opção</option><option>Até 5</option><option>6 a 15</option><option>16 a 30</option><option>Mais de 30</option></select></label>
+        <label className="text-sm font-semibold">Cidade/UF<input name="city" maxLength={100} className={`${field} mt-2`} placeholder="Digite sua cidade" /></label>
+        <label className="text-sm font-semibold">Quantidade de atendentes<select name="team" defaultValue="" className={`${field} mt-2`}><option value="" disabled>Selecione uma opção</option><option>Até 5</option><option>6 a 15</option><option>16 a 30</option><option>Mais de 30</option></select></label>
       </div>
       {error && <p role="alert" className="mt-4 text-sm font-medium text-destructive">{error}</p>}
-      <Button type="submit" size="lg" className="mt-6 w-full">Quero falar com um especialista <ArrowRight /></Button>
+      <Button type="submit" size="lg" disabled={sending} className="mt-6 w-full">Quero falar com um especialista <ArrowRight /></Button>
       <p className="mt-4 text-center text-xs leading-relaxed text-muted-foreground">Ao enviar, você será direcionado para uma conversa no WhatsApp com o resumo da sua operação.</p>
     </form>
   );
