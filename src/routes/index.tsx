@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import logoAsset from "@/assets/imme-logo.png.asset.json";
 import { useServerFn } from "@tanstack/react-start";
 import { sendLeadToCrm } from "@/lib/crm.functions";
+import cidadesUf from "@/lib/cidades-uf.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -121,16 +122,8 @@ function LeadForm() {
   const [error, setError] = useState("");
   const [sending, setSending] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [cities, setCities] = useState<string[]>([]);
+  const cities = cidadesUf as string[];
   const sendLead = useServerFn(sendLeadToCrm);
-  useEffect(() => {
-    fetch("https://servicodados.ibge.gov.br/api/v1/localidades/municipios?view=nivelado")
-      .then((r) => r.json())
-      .then((list: Array<Record<string, string>>) =>
-        setCities(list.map((m) => `${m["municipio-nome"]}/${m["UF-sigla"]}`).sort((a, b) => a.localeCompare(b, "pt-BR"))),
-      )
-      .catch(() => setCities([]));
-  }, []);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (sending) return;
@@ -139,7 +132,7 @@ function LeadForm() {
     const parsed = formSchema.safeParse(data);
     if (!parsed.success) { setError("Preencha todos os campos corretamente."); return; }
     const d = parsed.data;
-    if (cities.length && !cities.includes(d.city)) { setError("Selecione uma cidade da lista."); return; }
+    if (!cities.includes(d.city)) { setError("Selecione uma cidade da lista."); return; }
     setError("");
     setSuccess(false);
     setSending(true);
