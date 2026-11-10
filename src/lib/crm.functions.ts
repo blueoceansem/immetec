@@ -21,7 +21,7 @@ export const sendLeadToCrm = createServerFn({ method: "POST" })
     try {
       const res = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: { "Content-Type": "application/json", "X-Webhook-Secret": token },
         body: JSON.stringify(data),
       });
       if (!res.ok) {
