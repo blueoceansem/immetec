@@ -9,3 +9,4 @@
 - [x] Adicionar vídeos de depoimento nos cards da prova social
 - [x] Retirar os mini títulos das seções
 - [x] Verificar vídeos e cards no celular
+- [x] Manter apenas os dois primeiros depoimentos na prova social
