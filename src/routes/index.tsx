@@ -137,8 +137,21 @@ function LeadForm() {
     setSending(true);
     try {
       const res = await sendLead({ data: { Nome: d.name, WhatsApp: d.whatsapp, "Cidade/UF": d.city, "Faturamento mensal": d.revenue, "Quantidade de atendentes": Number(d.team) } });
-      if (res.ok) { setSuccess(true); form.reset(); }
-      else setError("Não foi possível enviar seus dados agora. Tente novamente.");
+      if (res.ok) {
+        const trackingWindow = window as Window & {
+          dataLayer?: Array<{ event: string; faturamento: string; atendentes: string }>;
+        };
+        trackingWindow.dataLayer ??= [];
+        trackingWindow.dataLayer.push({
+          event: "generate_lead",
+          faturamento: d.revenue,
+          atendentes: d.team,
+        });
+        setSuccess(true);
+        form.reset();
+      } else {
+        setError("Não foi possível enviar seus dados agora. Tente novamente.");
+      }
     } catch {
       setError("Não foi possível enviar seus dados agora. Tente novamente.");
     } finally {
